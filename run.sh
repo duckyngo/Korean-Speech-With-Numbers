@@ -1,0 +1,2 @@
+python get_aihub_number_data.py --data_root /nas2/voice/data/Number_Voice/Validation --training_set False
+python get_aihub_number_data.py --data_root /nas2/voice/data/Number_Voice/Training --training_set True
