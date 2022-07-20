@@ -4,6 +4,7 @@ Pre-processing code for Korean Speech Data with Number provided by AI Hub
 
 # Intro
 This reposisotry is pre-processing code for Korean Speech Data with Number provided by [AI Hub](https://aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100&aihubDataSe=realm&dataSetSn=484)
+
 Korean Speech Data with Number consists of more than 10,000 hours of voice data with 84 categories including numbers in Chinese characters (한자어), native words(고유어) and foreign words(외래어).
 
 
