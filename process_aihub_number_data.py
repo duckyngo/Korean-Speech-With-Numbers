@@ -87,6 +87,42 @@ def __extract_file(file_path: str, dst_folder: str):
     except:
         logging.info("Not extracting. Maybe files already exist!")
 
+
+def __process_text(input_text):
+    """
+    Process the script text, remove puntuation & special characters
+
+    Args:
+        input_text (str): Input text read from transcript file
+    Returns:
+        _type_: processed text
+    """
+    
+    # Sentence Mark
+    input_text = input_text.replace('.','')
+    input_text = input_text.replace('?','')
+    input_text = input_text.replace('!','')
+    input_text = input_text.replace('？', '')
+    
+    # Except
+    EXCEPT = ['/', '+', '*', '-', '@', '$', '^', '&', '[', ']', '=', ':', ';', ',' 
+              '×', 'Ô', '~', '₩', '>', '…', '„', '”', '“', '’', '‘', '|', '{', '}', '`', '<', '>', '\\', "'", '"', '×', ',', 'ㅣ', '​', 'ㅡ', '', '_',
+              '(',')', '《', '》', '「', '」']
+    
+    for except_char in EXCEPT:  
+        input_text = input_text.replace(except_char,'')
+        
+    # Replace with space
+    SPACE_REPLACE = ['~', '·', '  ', '\t', '·', '•','‧', '∙', 'ㆍ', ' ']
+    
+    for space_char in SPACE_REPLACE:  
+        input_text = input_text.replace(space_char,' ')
+    
+    input_text = input_text.strip()
+    
+    return input_text
+
+
 def __process_transcript(file_path: str, dst_folder: str):
     """
     Converts flac files to wav from a given transcript, capturing the metadata.
@@ -128,7 +164,7 @@ def __process_transcript(file_path: str, dst_folder: str):
         record = {}
         record["audio_filepath"] = os.path.abspath(wav_audio_file)
         record["duration"] = float(recorded_time)
-        record["text"] = transcript_text
+        record["text"] = __process_text(transcript_text)
         records.append(record)
     
     return records
@@ -187,7 +223,7 @@ def main():
     if data_sets == "FINANCE":
         data_sets = "5.금융-은행,6.나이-생년월일,7.날짜-시간,8.단위,18.통계-수치,20.통화-금액"
 
-    
+    dst_folder_path = data_root + "_Processed"
     all_records = []
     for data_set in data_sets.split(','):
         logging.info("Working on: {0}".format("TS_" + data_set + "(음성)"))
@@ -222,16 +258,15 @@ def main():
             
             
         # Process and convert .pcm to .wav / generate manifest json file
-        dst_folder_path = data_root + "_Processed"
         curr_records = __process_data(dst_audio_path, dst_label_path, dst_folder_path, os.path.join(dst_folder_path, f'{data_set}_manifest.json'), num_workers)
         all_records.extend(curr_records)
         
-        # Save all files to manifest_all.json
-        all_record_manifest_path = os.path.join(dst_folder_path, 'manifest_all.json')
-        with open(all_record_manifest_path, "w",  encoding='utf-8') as fout:
-            for m in all_records:
-                fout.write(json.dumps(m, ensure_ascii=False) + "\n")
-            
+    # Save all files to manifest_all.json
+    all_record_manifest_path = os.path.join(dst_folder_path, 'manifest_all.json')
+    with open(all_record_manifest_path, "w",  encoding='utf-8') as fout:
+        for m in all_records:
+            fout.write(json.dumps(m, ensure_ascii=False) + "\n")
+        
     
 
 if __name__ == '__main__':
