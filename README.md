@@ -1,4 +1,4 @@
-# korean-speech-with-numbers
+# Korean-Speech-With-Numbers
 Pre-processing code for Korean Speech Data with Number provided by AI Hub
 
 
